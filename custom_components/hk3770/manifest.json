@@ -1,0 +1,19 @@
+{
+  "domain": "hk3770",
+  "name": "Harman Kardon HK 3700/3770",
+  "codeowners": ["@wongy123"],
+  "config_flow": true,
+  "dependencies": ["ssdp"],
+  "documentation": "https://github.com/wongy123/harman-kardon-stereo-receiver",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "is_built_in": false,
+  "ssdp": [
+    {
+      "st": "urn:schemas-frontier-silicon-com:fs_reference:iptunnelling:1"
+    }
+  ],
+  "version": "1.0.0",
+  "issue_tracker": "https://github.com/wongy123/harman-kardon-stereo-receiver/issues",
+  "requirements": []
+}

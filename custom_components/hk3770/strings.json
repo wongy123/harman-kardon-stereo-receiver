@@ -1,0 +1,119 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to HK 3700/3770",
+        "description": "Enter the receiver's IP address. The integration probes the DLNA endpoint to confirm the device.",
+        "data": {
+          "host": "Host",
+          "ir_port": "IR tunnel port",
+          "upnp_port": "DLNA port"
+        }
+      },
+      "confirm": {
+        "title": "Confirm HK 3770",
+        "description": "A Harman Kardon HK 3700/3770 was discovered on the network. Add it to Home Assistant?"
+      },
+      "reconfigure": {
+        "title": "Reconfigure HK 3700/3770",
+        "data": {
+          "host": "Host",
+          "ir_port": "IR tunnel port",
+          "upnp_port": "DLNA port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the receiver. Check the IP address and that the amp is powered on.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "unique_id_mismatch": "That host is a different device than the one being reconfigured."
+    }
+  },
+  "entity": {
+    "media_player": {
+      "player": {
+        "name": "Receiver"
+      }
+    },
+    "select": {
+      "source": {
+        "name": "Source"
+      }
+    },
+    "sensor": {
+      "transport": {
+        "name": "Transport"
+      },
+      "source_sensor": {
+        "name": "Source"
+      }
+    },
+    "button": {
+      "volume_up": {
+        "name": "Volume up"
+      },
+      "volume_down": {
+        "name": "Volume down"
+      },
+      "assign_analog": {
+        "name": "Cycle analog input"
+      },
+      "assign_digital": {
+        "name": "Cycle digital input"
+      },
+      "nav_up": {
+        "name": "Menu up"
+      },
+      "nav_down": {
+        "name": "Menu down"
+      },
+      "nav_exit": {
+        "name": "Menu exit"
+      },
+      "tune_up": {
+        "name": "Tune up"
+      },
+      "tune_down": {
+        "name": "Tune down"
+      },
+      "tuner_direct": {
+        "name": "Tuner direct entry"
+      },
+      "tuner_mem": {
+        "name": "Tuner store preset"
+      },
+      "dim_display": {
+        "name": "Dim display"
+      },
+      "menu": {
+        "name": "Menu"
+      },
+      "rds": {
+        "name": "RDS"
+      },
+      "speaker_a": {
+        "name": "Speaker A"
+      },
+      "speaker_b": {
+        "name": "Speaker B"
+      },
+      "harman_volume": {
+        "name": "Harman volume"
+      },
+      "auto_preset": {
+        "name": "Auto preset"
+      },
+      "tone": {
+        "name": "Tone control"
+      }
+    },
+    "number": {
+      "tuner_frequency": {
+        "name": "Tuner frequency"
+      }
+    }
+  }
+}
