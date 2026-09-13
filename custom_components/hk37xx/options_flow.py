@@ -5,7 +5,7 @@ from homeassistant.config_entries import ConfigEntry, OptionsFlow
 from homeassistant.core import callback
 
 
-class HK3770OptionsFlowHandler(OptionsFlow):
+class HK37xxOptionsFlowHandler(OptionsFlow):
     """Empty options flow placeholder (keeps parity with yamaha_ynca)."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:

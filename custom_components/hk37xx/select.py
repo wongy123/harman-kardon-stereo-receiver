@@ -13,8 +13,8 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import SOURCES
-from .coordinator import HK3770Coordinator
-from .entity import HK3770Entity
+from .coordinator import HK37xxCoordinator
+from .entity import HK37xxEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -26,18 +26,18 @@ async def async_setup_entry(
     entry: "ConfigEntry",
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: HK3770Coordinator = entry.runtime_data
-    async_add_entities([HK3770SourceSelect(coordinator)])
+    coordinator: HK37xxCoordinator = entry.runtime_data
+    async_add_entities([HK37xxSourceSelect(coordinator)])
 
 
-class HK3770SourceSelect(HK3770Entity, SelectEntity):
+class HK37xxSourceSelect(HK37xxEntity, SelectEntity):
     """Current input source; selecting sends the IR source-selection."""
 
     _attr_translation_key = "source"
     _attr_options = list(SOURCES)
     _attr_icon = "mdi:import"
 
-    def __init__(self, coordinator: HK3770Coordinator) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator) -> None:
         super().__init__(coordinator, "source")
 
     @property

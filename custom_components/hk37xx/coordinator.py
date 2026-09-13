@@ -22,7 +22,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .client import HK3770IRClient, HK3770UPnPClient
+from .client import HK37xxIRClient, HK37xxUPnPClient
 from .const import (
     CONF_IR_PORT,
     CONF_UPNP_PORT,
@@ -50,7 +50,7 @@ class HKDlnaState:
     media: dict[str, Any] = field(default_factory=dict)
 
 
-class HK3770Coordinator(DataUpdateCoordinator[HKDlnaState]):
+class HK37xxCoordinator(DataUpdateCoordinator[HKDlnaState]):
     """Poll DLNA, track IR state, own both clients."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -62,10 +62,10 @@ class HK3770Coordinator(DataUpdateCoordinator[HKDlnaState]):
         )
         self.entry = entry
         host = entry.data["host"]
-        self.ir = HK3770IRClient(
+        self.ir = HK37xxIRClient(
             host, entry.data.get(CONF_IR_PORT, DEFAULT_IR_PORT)
         )
-        self.upnp = HK3770UPnPClient(
+        self.upnp = HK37xxUPnPClient(
             host, entry.data.get(CONF_UPNP_PORT, DEFAULT_UPNP_PORT)
         )
         # IR-tracked (no readback). Seeded from persisted options.

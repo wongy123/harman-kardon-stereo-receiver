@@ -12,8 +12,8 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .coordinator import HK3770Coordinator
-from .entity import HK3770Entity
+from .coordinator import HK37xxCoordinator
+from .entity import HK37xxEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -25,16 +25,16 @@ async def async_setup_entry(
     entry: "ConfigEntry",
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: HK3770Coordinator = entry.runtime_data
+    coordinator: HK37xxCoordinator = entry.runtime_data
     async_add_entities(
         [
-            HK3770TransportSensor(coordinator),
-            HK3770SourceSensor(coordinator),
+            HK37xxTransportSensor(coordinator),
+            HK37xxSourceSensor(coordinator),
         ]
     )
 
 
-class HK3770TransportSensor(HK3770Entity, SensorEntity):
+class HK37xxTransportSensor(HK37xxEntity, SensorEntity):
     """Raw DLNA transport state."""
 
     _attr_translation_key = "transport"
@@ -42,7 +42,7 @@ class HK3770TransportSensor(HK3770Entity, SensorEntity):
     _attr_entity_category = EntityCategory.CONFIG
     _attr_entity_registry_enabled_default = False
 
-    def __init__(self, coordinator: HK3770Coordinator) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator) -> None:
         super().__init__(coordinator, "transport")
 
     @property
@@ -50,13 +50,13 @@ class HK3770TransportSensor(HK3770Entity, SensorEntity):
         return self.coordinator.data.transport if self.coordinator.data else None
 
 
-class HK3770SourceSensor(HK3770Entity, SensorEntity):
+class HK37xxSourceSensor(HK37xxEntity, SensorEntity):
     """IR-tracked current source (read-only mirror)."""
 
     _attr_translation_key = "source_sensor"
     _attr_icon = "mdi:input-source"
 
-    def __init__(self, coordinator: HK3770Coordinator) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator) -> None:
         super().__init__(coordinator, "source_sensor")
 
     @property

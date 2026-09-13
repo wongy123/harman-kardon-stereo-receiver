@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING
 from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .coordinator import HK3770Coordinator
-from .entity import HK3770Entity
+from .coordinator import HK37xxCoordinator
+from .entity import HK37xxEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -27,11 +27,11 @@ async def async_setup_entry(
     entry: "ConfigEntry",
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: HK3770Coordinator = entry.runtime_data
-    async_add_entities([HK3770TunerFrequencyNumber(coordinator)])
+    coordinator: HK37xxCoordinator = entry.runtime_data
+    async_add_entities([HK37xxTunerFrequencyNumber(coordinator)])
 
 
-class HK3770TunerFrequencyNumber(HK3770Entity, NumberEntity):
+class HK37xxTunerFrequencyNumber(HK37xxEntity, NumberEntity):
     """Direct FM frequency entry: `direct` then the digit keys."""
 
     _attr_translation_key = "tuner_frequency"
@@ -43,7 +43,7 @@ class HK3770TunerFrequencyNumber(HK3770Entity, NumberEntity):
     _attr_native_unit_of_measurement = "MHz"
     _attr_native_value: float | None = None
 
-    def __init__(self, coordinator: HK3770Coordinator) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator) -> None:
         super().__init__(coordinator, "tuner_frequency")
 
     async def async_set_native_value(self, value: float) -> None:

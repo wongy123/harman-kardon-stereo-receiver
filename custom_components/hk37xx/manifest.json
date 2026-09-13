@@ -1,5 +1,5 @@
 {
-  "domain": "hk3770",
+  "domain": "hk37xx",
   "name": "Harman Kardon HK 3700/3770",
   "codeowners": ["@wongy123"],
   "config_flow": true,

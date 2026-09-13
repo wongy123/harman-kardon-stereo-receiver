@@ -76,7 +76,7 @@ def db_to_dlna(db: int) -> int:
     return max(0, min(100, db + 81))
 
 
-class HK3770IRClient:
+class HK37xxIRClient:
     """Harman XML -> IR tunnelling client (port 10025)."""
 
     _TEMPLATE = (
@@ -231,7 +231,7 @@ class HK3770IRClient:
         self.send("clear")
 
 
-class HK3770UPnPClient:
+class HK37xxUPnPClient:
     """DLNA MediaRenderer SOAP client (port 8080)."""
 
     def __init__(self, host: str, port: int = 8080) -> None:

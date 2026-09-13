@@ -18,8 +18,8 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .coordinator import HK3770Coordinator
-from .entity import HK3770Entity
+from .coordinator import HK37xxCoordinator
+from .entity import HK37xxEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -27,36 +27,36 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, kw_only=True)
-class HK3770ButtonDescription:
+class HK37xxButtonDescription:
     """Describes one IR one-shot button."""
 
     key: str
     icon: str
-    press: Callable[[HK3770Coordinator], Awaitable[None]]
+    press: Callable[[HK37xxCoordinator], Awaitable[None]]
     entity_category: EntityCategory | None = None
     hk3770_only: bool = False
 
 
-DESCRIPTIONS: tuple[HK3770ButtonDescription, ...] = (
+DESCRIPTIONS: tuple[HK37xxButtonDescription, ...] = (
     # IR volume steps - audible, but invisible to DLNA GetVolume.
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="volume_up",
         icon="mdi:volume-plus",
         press=lambda c: c.async_volume_up(),
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="volume_down",
         icon="mdi:volume-minus",
         press=lambda c: c.async_volume_down(),
     ),
     # Input assignment cyclers (manual p.9: select a source, then assign).
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="assign_analog",
         icon="mdi:audio-input-rca",
         press=lambda c: c.async_cycle_analog(),
         entity_category=EntityCategory.CONFIG,
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="assign_digital",
         icon="mdi:toslink",
         press=lambda c: c.async_cycle_digital(),
@@ -64,59 +64,59 @@ DESCRIPTIONS: tuple[HK3770ButtonDescription, ...] = (
         entity_category=EntityCategory.CONFIG,
     ),
     # Menu navigation (confirmed: up, down, exit).
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="nav_up", icon="mdi:menu-up", press=lambda c: c.async_nav("up")
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="nav_down", icon="mdi:menu-down", press=lambda c: c.async_nav("down")
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="nav_exit", icon="mdi:arrow-left", press=lambda c: c.async_nav("exit")
     ),
     # Tuner.
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="tune_up", icon="mdi:access-point-plus", press=lambda c: c.async_tune("up")
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="tune_down", icon="mdi:access-point-minus", press=lambda c: c.async_tune("down")
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="tuner_direct", icon="mdi:tune", press=lambda c: c.async_tuner_direct()
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="tuner_mem", icon="mdi:content-save", press=lambda c: c.async_tuner_mem()
     ),
     # Display.
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="dim_display", icon="mdi:brightness-6", press=lambda c: c.async_dim_display()
     ),
     # Confirmed via the decompiled official app.
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="menu", icon="mdi:menu", press=lambda c: c.async_top_menu()
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="rds", icon="mdi:radio-tower", press=lambda c: c.async_rds()
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="speaker_a",
         icon="mdi:speaker",
         press=lambda c: c.async_speaker_switch("A"),
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="speaker_b",
         icon="mdi:speaker-multiple",
         press=lambda c: c.async_speaker_switch("B"),
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="harman_volume",
         icon="mdi:volume-equal",
         press=lambda c: c.async_harman_volume(),
         hk3770_only=True,
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="auto_preset", icon="mdi:auto-fix", press=lambda c: c.async_auto_preset()
     ),
-    HK3770ButtonDescription(
+    HK37xxButtonDescription(
         key="tone", icon="mdi:equalizer", press=lambda c: c.async_tone_control()
     ),
 )
@@ -127,22 +127,22 @@ async def async_setup_entry(
     entry: "ConfigEntry",
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: HK3770Coordinator = entry.runtime_data
+    coordinator: HK37xxCoordinator = entry.runtime_data
     is_3770 = "3770" in str(entry.data.get("model", ""))
     async_add_entities(
-        HK3770Button(coordinator, d)
+        HK37xxButton(coordinator, d)
         for d in DESCRIPTIONS
         if not d.hk3770_only or is_3770
     )
 
 
-class HK3770Button(HK3770Entity, ButtonEntity):
+class HK37xxButton(HK37xxEntity, ButtonEntity):
     """One IR one-shot button on the receiver."""
 
     _attr_entity_registry_enabled_default = True
 
     def __init__(
-        self, coordinator: HK3770Coordinator, description: HK3770ButtonDescription
+        self, coordinator: HK37xxCoordinator, description: HK37xxButtonDescription
     ) -> None:
         super().__init__(coordinator, description.key)
         self._description = description

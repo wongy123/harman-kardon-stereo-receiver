@@ -17,8 +17,8 @@ from homeassistant.components.media_player import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import SOURCES
-from .coordinator import HK3770Coordinator
-from .entity import HK3770Entity
+from .coordinator import HK37xxCoordinator
+from .entity import HK37xxEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -30,11 +30,11 @@ async def async_setup_entry(
     entry: "ConfigEntry",
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator: HK3770Coordinator = entry.runtime_data
-    async_add_entities([HK3770MediaPlayer(coordinator)])
+    coordinator: HK37xxCoordinator = entry.runtime_data
+    async_add_entities([HK37xxMediaPlayer(coordinator)])
 
 
-class HK3770MediaPlayer(HK3770Entity, MediaPlayerEntity):
+class HK37xxMediaPlayer(HK37xxEntity, MediaPlayerEntity):
     """DLNA-backed media player for the HK 3770."""
 
     _attr_name = None  # device name is the entity name (has_entity_name)
@@ -55,7 +55,7 @@ class HK3770MediaPlayer(HK3770Entity, MediaPlayerEntity):
         | MediaPlayerEntityFeature.SELECT_SOURCE
     )
 
-    def __init__(self, coordinator: HK3770Coordinator) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator) -> None:
         super().__init__(coordinator, "player")
 
     # ------------------------------------------------------------- state

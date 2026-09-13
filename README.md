@@ -20,8 +20,7 @@ or added manually by IP.
 
 ### Manual install
 
-Copy `custom_components/hk3770/` into your `config/custom_components/` directory and
-restart Home Assistant.
+Copy `custom_components/hk37xx/` into your `config/custom_components/` directory and
 
 ## What you get
 

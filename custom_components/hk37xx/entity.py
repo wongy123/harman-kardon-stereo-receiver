@@ -10,15 +10,15 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
-from .coordinator import HK3770Coordinator
+from .coordinator import HK37xxCoordinator
 
 
-class HK3770Entity(CoordinatorEntity[HK3770Coordinator]):
+class HK37xxEntity(CoordinatorEntity[HK37xxCoordinator]):
     """Common base: one device, has-entity-name, availability from DLNA poll."""
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator: HK3770Coordinator, key: str) -> None:
+    def __init__(self, coordinator: HK37xxCoordinator, key: str) -> None:
         super().__init__(coordinator)
         entry = coordinator.entry
         self._attr_unique_id = f"{entry.data['mac']}_{key}"

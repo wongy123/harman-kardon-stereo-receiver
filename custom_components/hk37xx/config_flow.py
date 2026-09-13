@@ -22,7 +22,7 @@ from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 
-from .client import HK3770UPnPClient
+from .client import HK37xxUPnPClient
 from .const import (
     CONF_IR_PORT,
     CONF_UPNP_PORT,
@@ -37,10 +37,10 @@ _LOGGER = logging.getLogger(__name__)
 
 def _probe_identity(host: str) -> dict[str, Any]:
     """Fetch dd.xml from the DLNA endpoint; return identity or raise."""
-    client = HK3770UPnPClient(host, DEFAULT_UPNP_PORT)
+    client = HK37xxUPnPClient(host, DEFAULT_UPNP_PORT)
     info = client.device_info()
     if not info or not info.get("udn"):
-        raise ConnectionError(f"No HK3770 DLNA identity at {host}")
+        raise ConnectionError(f"No HK 3700/3770 DLNA identity at {host}")
     mac = mac_from_udn(info["udn"])
     if not mac:
         raise ConnectionError(f"Could not derive MAC from UDN {info['udn']}")
@@ -52,7 +52,7 @@ def _probe_identity(host: str) -> dict[str, Any]:
     }
 
 
-class HK3770ConfigFlow(ConfigFlow, domain=DOMAIN):
+class HK37xxConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for HK 3700/3770."""
 
     VERSION = 1
@@ -60,9 +60,9 @@ class HK3770ConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        from .options_flow import HK3770OptionsFlowHandler
+        from .options_flow import HK37xxOptionsFlowHandler
 
-        return HK3770OptionsFlowHandler(config_entry)
+        return HK37xxOptionsFlowHandler(config_entry)
 
     # ------------------------------------------------------------- user
     async def async_step_user(

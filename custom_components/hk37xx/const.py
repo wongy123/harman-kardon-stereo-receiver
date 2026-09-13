@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from homeassistant.const import CONF_HOST, CONF_PORT  # noqa: F401  (re-exported)
 
-DOMAIN = "hk3770"
+DOMAIN = "hk37xx"
 MANUFACTURER = "Harman Kardon"
 
 # Control surfaces (see client.py for the measured behaviour of each).

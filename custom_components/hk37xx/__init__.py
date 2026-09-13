@@ -2,7 +2,7 @@
 
 Configured via the UI (config flow) - either by IP or by SSDP discovery of
 the Frontier Silicon IR-tunnel device. YAML setup is not supported; the
-old `media_player: - platform: hk3770` block must be removed.
+old `media_player: - platform: hk37xx` block must be removed.
 
 One config entry = one receiver device. The device carries:
 
@@ -27,7 +27,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN
-from .coordinator import HK3770Coordinator
+from .coordinator import HK37xxCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.helpers.typing import ConfigType
@@ -42,7 +42,7 @@ PLATFORMS: list[Platform] = [
     Platform.NUMBER,
 ]
 
-type HK3770ConfigEntry = ConfigEntry[HK3770Coordinator]
+type HK37xxConfigEntry = ConfigEntry[HK37xxCoordinator]
 
 
 async def async_setup(_hass: HomeAssistant, _config: "ConfigType") -> bool:
@@ -50,15 +50,15 @@ async def async_setup(_hass: HomeAssistant, _config: "ConfigType") -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: HK3770ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: HK37xxConfigEntry) -> bool:
     """Set up an HK 3700/3770 from a config entry."""
-    coordinator = HK3770Coordinator(hass, entry)
+    coordinator = HK37xxCoordinator(hass, entry)
 
     try:
         await coordinator.async_config_entry_first_refresh()
     except Exception as err:  # noqa: BLE001
         raise ConfigEntryNotReady(
-            f"Could not reach HK 3770 at {entry.data['host']}"
+            f"Could not reach HK 3700/3770 at {entry.data['host']}"
         ) from err
 
     entry.runtime_data = coordinator
@@ -66,6 +66,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: HK3770ConfigEntry) -> bo
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: HK3770ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: HK37xxConfigEntry) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
