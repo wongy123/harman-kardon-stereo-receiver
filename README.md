@@ -97,6 +97,21 @@ property of the receiver itself.
 - **SSDP discovery:** the IR-tunnel search target is unique to this chip family, so
   discovery does not over-match other DLNA renderers on the LAN.
 
+
+## Remote card
+
+The repo includes a standalone Lovelace card (`custom_components/hk37xx/lovelace/hk37xx-remote-card.js`) — a touch-friendly remote UI using the integration's entities.
+
+**Install:** copy the `.js` to `/config/www/` (or reference from the component folder), add as a Lovelace resource:
+
+```yaml
+type: custom:hk37xx-remote-card
+title: "HK 3770 Remote"
+```
+
+Features: source dropdown, volume (+/−), mute, FM frequency entry (`DIRECT` triggers `direct` mode; the number sends digit sequence; display always shows fixed decimal), preset/store, RDS, speaker A/B, menu navigation (`MENU`, `▲ MEN`, `▼ MEN`, `EXIT`), Harman Volume (`VOL EQ`), tone (`TONE`), display dim (`DIM`), auto-preset (`AUTO`). The frequency number input accepts values like `101.5` (sent as digits `1015`).
+
+No external dependencies — communicates through the integration clients.
 ## License
 
 MIT
