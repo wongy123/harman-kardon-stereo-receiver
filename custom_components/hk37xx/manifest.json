@@ -13,7 +13,7 @@
       "st": "urn:schemas-frontier-silicon-com:fs_reference:iptunnelling:1"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "issue_tracker": "https://github.com/wongy123/harman-kardon-stereo-receiver/issues",
   "requirements": []
 }

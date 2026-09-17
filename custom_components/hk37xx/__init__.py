@@ -6,7 +6,7 @@ old `media_player: - platform: hk37xx` block must be removed.
 
 One config entry = one receiver device. The device carries:
 
-* media_player   - DLNA volume / mute / transport / source
+* media_player   - IR receiver controls with DLNA state readback
 * select         - source selector
 * button         - IR one-shots (volume steps, analog/digital cycler,
                    nav, tuner, dim)

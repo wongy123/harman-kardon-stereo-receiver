@@ -100,14 +100,10 @@ class HK37xxMediaPlayer(HK37xxEntity, MediaPlayerEntity):
         await self.coordinator.async_set_volume(round(volume * 100))
 
     async def async_volume_up(self) -> None:
-        cur = self.coordinator.data.volume if self.coordinator.data else None
-        if cur is not None:
-            await self.coordinator.async_set_volume(min(100, cur + 1))
+        await self.coordinator.async_volume_up()
 
     async def async_volume_down(self) -> None:
-        cur = self.coordinator.data.volume if self.coordinator.data else None
-        if cur is not None:
-            await self.coordinator.async_set_volume(max(0, cur - 1))
+        await self.coordinator.async_volume_down()
 
     async def async_mute_volume(self, mute: bool) -> None:
         await self.coordinator.async_set_mute(mute)

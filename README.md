@@ -26,9 +26,9 @@ Copy `custom_components/hk37xx/` into your `config/custom_components/` directory
 
 ### Media player
 
-`media_player.<name>` — power off, volume, mute, play/pause/stop, input/source
-select. Volume and mute are read back from DLNA so they stay in sync with the amp.
-(Power **on** is not reachable over the network — see the caveat below.)
+`media_player.<name>` — power off, absolute volume, volume steps, mute,
+play/pause/stop, and input/source select. Receiver controls use the IR tunnel;
+DLNA supplies volume, mute, transport, and source readback.
 
 ### Sensors
 
@@ -90,10 +90,10 @@ property of the receiver itself.
 
 - **IR tunnel (port 10025):** the receiver exposes a Frontier Silicon
   `ir-ser-FS4444` service that accepts Harman XML commands and replays them as IR.
-  Used for all one-shot controls. Fire-and-forget — no readback.
-- **DLNA MediaRenderer (port 8080):** standard UPnP `AVTransport` /
-  `RenderingControl` / `ConnectionManager`. Used for volume, mute, transport, and
-  source readback, polled on an interval.
+  Used for power, volume steps, mute, playback, sources, and one-shot controls.
+  Fire-and-forget — no direct command acknowledgement.
+- **DLNA MediaRenderer (port 8080):** standard UPnP services used for absolute
+  volume setting and state readback.
 - **SSDP discovery:** the IR-tunnel search target is unique to this chip family, so
   discovery does not over-match other DLNA renderers on the LAN.
 

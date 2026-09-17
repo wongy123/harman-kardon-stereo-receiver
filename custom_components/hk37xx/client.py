@@ -3,31 +3,20 @@
 The amp exposes two independent control surfaces:
 
 1. UPnP DLNA MediaRenderer on port 8080
-   Standard SOAP services with real state readback:
-     RenderingControl  - GetVolume / SetVolume / GetMute / SetMute
-     AVTransport       - Play / Pause / Stop / Next / Previous /
-                        SetAVTransportURI / GetTransportInfo / GetMediaInfo
-   Volume here is AUTHORITATIVE and AUDIBLE: DLNA SetVolume(N) drives the
-   amp's real output. Confirmed mapping (user test): N=1 -> -80 dB (min),
-   N=2 -> -79 dB, ... N=91 -> +10 dB (max). So dB = N - 81, clamped.
-   Mute is shared with the IR path (both reflect each other).
+   Standard SOAP services provide readback for volume, mute, and transport,
+   plus absolute volume setting and media metadata.
 
 2. IR-to-IP tunnelling host on port 10025
    Frontier Silicon "ir-ser-FS4444". Accepts the Harman XML envelope and
    fires the equivalent IR code. Commands are accepted SILENTLY - there is
    no acknowledgement, so a successful send proves nothing. Only
    `heart-alive` ever replies (a 257-byte POST-back).
-   This is the only way to select sources, power off, navigate the menu,
-   drive the tuner, or dim the display.
+   This is the command path used by the official HK3700 UI for source,
+   power, volume steps, mute, playback, navigation, tuner, and display.
 
-Why volume comes from DLNA and not IR:
-   IR volume-up / volume-down change the amp's loudness but are INVISIBLE to
-   DLNA GetVolume (tested: DLNA stayed pinned through repeated IR steps).
-   Mixing the two would desync the readback. DLNA gives absolute set + read,
-   so the integration uses DLNA for volume and never fires IR volume.
-
-Command vocabulary below is the empirically confirmed set (26 buttons).
-Unconfirmed candidates live in tools/hk3770_buttons.py, not here.
+DLNA remains the readable state surface. IR volume steps are not reflected by
+DLNA GetVolume, but the receiver's controls must still use IR to match the
+physical remote and official app.
 """
 from __future__ import annotations
 
@@ -176,6 +165,30 @@ class HK37xxIRClient:
         """IR volume step down. Confirmed audible; INVISIBLE to DLNA GetVolume."""
         self.send("volume-down")
 
+    def set_mute(self, mute: bool) -> None:
+        """Set mute through the IR tunnel."""
+        self.send("mute-on" if mute else "mute-off")
+
+    def play(self) -> None:
+        """Start playback through the IR tunnel."""
+        self.send("play")
+
+    def pause(self) -> None:
+        """Pause playback through the IR tunnel."""
+        self.send("pause")
+
+    def stop(self) -> None:
+        """Stop playback through the IR tunnel."""
+        self.send("stop")
+
+    def next_track(self) -> None:
+        """Select the next track through the IR tunnel."""
+        self.send("next")
+
+    def previous_track(self) -> None:
+        """Select the previous track through the IR tunnel."""
+        self.send("previous")
+
     def alive(self, attempts: int = 2) -> bool:
         """heart-alive answers only when the amp is powered.
 
@@ -294,11 +307,6 @@ class HK37xxUPnPClient:
             return None
         return self._fields(raw).get("CurrentMute") == "1"
 
-    def set_mute(self, mute: bool) -> bool:
-        code, _ = self._soap(RC_TYPE, "RenderingControl/control", "SetMute",
-                            {"InstanceID": 0, "Channel": "Master",
-                             "DesiredMute": 1 if mute else 0})
-        return code == 200
 
     # ---- AVTransport ----------------------------------------------------
 
@@ -323,30 +331,6 @@ class HK37xxUPnPClient:
             return {}
         return self._fields(raw)
 
-    def play(self) -> bool:
-        code, _ = self._soap(AT_TYPE, "AVTransport/control", "Play",
-                            {"InstanceID": 0, "Speed": "1"})
-        return code == 200
-
-    def pause(self) -> bool:
-        code, _ = self._soap(AT_TYPE, "AVTransport/control", "Pause",
-                            {"InstanceID": 0})
-        return code == 200
-
-    def stop(self) -> bool:
-        code, _ = self._soap(AT_TYPE, "AVTransport/control", "Stop",
-                            {"InstanceID": 0})
-        return code == 200
-
-    def next_track(self) -> bool:
-        code, _ = self._soap(AT_TYPE, "AVTransport/control", "Next",
-                            {"InstanceID": 0})
-        return code == 200
-
-    def previous_track(self) -> bool:
-        code, _ = self._soap(AT_TYPE, "AVTransport/control", "Previous",
-                            {"InstanceID": 0})
-        return code == 200
 
     def set_uri(self, uri: str, metadata: str = "") -> bool:
         code, _ = self._soap(AT_TYPE, "AVTransport/control", "SetAVTransportURI",

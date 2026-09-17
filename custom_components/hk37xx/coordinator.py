@@ -4,10 +4,8 @@ One coordinator owns both control surfaces and the single source of truth:
 
 * DLNA (port 8080) is polled for the *readable* state - volume, mute,
   transport. This is the only surface with real readback.
-* The IR tunnel (port 10025) is fire-and-forget. Its effects (source,
-  input assignment, Harman Volume, display) have NO readback, so the
-  coordinator *tracks* the last value it commanded and exposes it as
-  best-effort state.
+* The IR tunnel (port 10025) is fire-and-forget. It handles receiver
+  controls; source and input-assignment effects have no readback.
 
 Entities read from the coordinator; they never touch the clients directly.
 """
@@ -153,33 +151,34 @@ class HK37xxCoordinator(DataUpdateCoordinator[HKDlnaState]):
     async def async_tune_direct(self, digits: str) -> None:
         await self.hass.async_add_executor_job(self.ir.tune_direct, digits)
 
-    # ------------------------------------------------------- DLNA commands
+    # ------------------------------------------------------- control commands
     async def async_set_volume(self, level: int) -> None:
+        """Set an absolute volume through DLNA."""
         await self.hass.async_add_executor_job(self.upnp.set_volume, level)
         await self.async_request_refresh()
 
     async def async_set_mute(self, mute: bool) -> None:
-        await self.hass.async_add_executor_job(self.upnp.set_mute, mute)
+        await self.hass.async_add_executor_job(self.ir.set_mute, mute)
         await self.async_request_refresh()
 
     async def async_play(self) -> None:
-        await self.hass.async_add_executor_job(self.upnp.play)
+        await self.hass.async_add_executor_job(self.ir.play)
         await self.async_request_refresh()
 
     async def async_pause(self) -> None:
-        await self.hass.async_add_executor_job(self.upnp.pause)
+        await self.hass.async_add_executor_job(self.ir.pause)
         await self.async_request_refresh()
 
     async def async_stop(self) -> None:
-        await self.hass.async_add_executor_job(self.upnp.stop)
+        await self.hass.async_add_executor_job(self.ir.stop)
         await self.async_request_refresh()
 
     async def async_next(self) -> None:
-        await self.hass.async_add_executor_job(self.upnp.next_track)
+        await self.hass.async_add_executor_job(self.ir.next_track)
         await self.async_request_refresh()
 
     async def async_previous(self) -> None:
-        await self.hass.async_add_executor_job(self.upnp.previous_track)
+        await self.hass.async_add_executor_job(self.ir.previous_track)
         await self.async_request_refresh()
 
     # ------------------------------------------------------- persistence
